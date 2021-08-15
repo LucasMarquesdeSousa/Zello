@@ -16,24 +16,22 @@ use App\Models\User;
 |
 */
 
-//usuario comun
 Auth::routes();
+//usuario convidado
 Route::get('/', function () {
     return view('welcome');
 });
-
+//usuario comun
 Route::middleware(['auth'])->group(function(){
     Route::get('/home', [UserController::class, 'index'])->name('home');
     Route::get('/cadastrarAplicativo', [UserController::class, 'cadApp'] );
     Route::post('/home/editar', [UserController::class, 'editarUsuario']);
     Route::get('/home/excluir', [UserController::class, 'excluirusuario']);
 });
-
 //gestor
 Route::middleware(['auth', 'gestor'])->group((function(){
     Route::get('/gestor', [UserController::class , 'gestor']);
 }));
-
 //administrador
 Route::middleware(['auth', 'admin'])->group((function(){
     Route::get('/admin', [UserController::class , 'admin']);

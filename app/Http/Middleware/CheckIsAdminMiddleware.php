@@ -17,7 +17,7 @@ class CheckIsAdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        $user =Auth::user();
+        $user = Auth::user();
         if($user->perfil_id == 3):
             return $next($request);
         endif;

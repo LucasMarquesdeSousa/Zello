@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Dotenv\Validator;
+use Illuminate\Support\Facades\Validator;
 use Hamcrest\Core\HasToString;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -49,13 +49,22 @@ class UserController extends Controller
     }
     public function cadusuario(Request $form)
     {
-        $form->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'cpf' => ['required'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'rg' => ['required'],
-            'data_nascimento' => ['required', 'date'],
-        ]);
+        $rules = [
+            'name'=> 'required|string|min:3',
+            'cpf' =>  'required|min:11|max:11',
+            'rg'=> 'required|min:7|max:7',
+            'senha'=>'required|min:8'
+        ];
+        $messages = [
+            'name.required'=>'Preencha o camo nome',
+            'cpf.required'=>'Preencha o campo CPF',
+            'cpf.min'=>'Preencha o CPF com 11 algarismos',
+            'rg.required'=> 'Preencha o campo RG',
+            'rg.min'=>'Preencha o RG com 7 caracteres',
+            'senha.required'=>'Preencha o camo senha',
+            'senha.min'=>'preencha o campo senha com no minimo 8 caracteres'
+        ];
+        return response($this->validate($form,$rules,$messages));
 
         User::create([
             'name' => $form['name'],
@@ -65,7 +74,7 @@ class UserController extends Controller
             'password' => Hash::make($form['password']),
             'perfil_id' => '1'
         ]);
-        return redirect()->back();
+        return ['mensagem'=>'Cadastrado'];
     }
     public function getUser(Request $request)
     {
@@ -74,41 +83,41 @@ class UserController extends Controller
     }
     public function editaUsuarioQualquer(Request $form)
     {
-        $this->validate($form,[
+        $this->validate($form, [
             'name' => 'required|string|max:255',
             'cpf' => 'required|string|min:14',
             'rg' => 'required',
             'data_nascimento' => 'required|date',
-            'perfil_id'=>'Required|integer|min:1|max:3'
+            'perfil_id' => 'Required|integer|min:1|max:3'
         ]);
         $user = User::where('cpf', '=', $form->post('cpf'))->get();
         $user = User::find($user[0]['id']);
         if ($user) :
-            $campos = ['name','cpf','rg', 'data_nascimento' , 'perfil_id'];
-            for ($i=0; $i < count($campos); $i++) { 
+            $campos = ['name', 'cpf', 'rg', 'data_nascimento', 'perfil_id'];
+            for ($i = 0; $i < count($campos); $i++) {
                 $a = $campos[$i];
-                if($form->post($a) != $user->$a):
-                    $user->$a = $form->post($a) ;
+                if ($form->post($a) != $user->$a) :
+                    $user->$a = $form->post($a);
                 endif;
             }
             $user->save();
             return redirect()->back()->with('msg', 'Usuario editado com sucesso!');
-        else:
+        else :
             return redirect()->back()->with('msg', 'Usuário errado');
 
         endif;
     }
 
-    public function excluirusuario(Request $request){
+    public function excluirusuario(Request $request)
+    {
         $descriptado = Crypt::decrypt($request->get('dado'));
         $user = User::where('cpf', '=', $descriptado)->get();
         $user = User::find($user[0]['id']);
         if ($user) :
-           $user->delete();
+            $user->delete();
             return redirect()->back()->with('msg', 'Usuario excluido!');
-        else:
+        else :
             return redirect()->back()->with('msg', 'Usuário errado');
         endif;
-
     }
 }
