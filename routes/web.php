@@ -39,3 +39,7 @@ Route::middleware(['auth', 'admin'])->group((function(){
     Route::get('/ed', [UserController::class, 'getUser']);
     Route::post('/edUser', [UserController::class, 'editaUsuarioQualquer']);
 }));
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -1,11 +1,5 @@
 @extends('layouts.app')
-<!-- bootstrap -->
-<link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/icofont.min.css') }}">
-    <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
-    <script src="{{ asset('assets/js/jquery.mask.js') }}"></script>
-    <script src="{{ asset('assets/js/bundle.min.js') }}"></script>
+
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -32,39 +26,12 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('CPF') }}</label>
+                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
 
                             <div class="col-md-6">
-                                <input id="cpf" type="text" class="form-control @error('cpf') is-invalid @enderror" name="cpf" value="{{ old('cpf') }}" required autocomplete="cpf" autofocus>
+                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
 
-                                @error('cpf')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('RG') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="rg" type="text" class="form-control @error('name') is-invalid @enderror" name="rg" value="{{ old('rg') }}" required autocomplete="name" autofocus>
-
-                                @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Data de nascimento') }}</label>
-                            <div class="col-md-6">
-                                <input id="data_nascimento" type="date" class="form-control @error('name') is-invalid @enderror" name="data_nascimento" value="{{ old('data_nascimento') }}" required autocomplete="name" autofocus>
-
-                                @error('data_nascimento')
+                                @error('email')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>

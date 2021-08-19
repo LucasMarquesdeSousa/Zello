@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('rg');
             $table->date('data_nascimento');
             $table->string('password');
+            $table->string('api_token', 80)->after('senha')->unique()->nullable()->default(null);
             $table->integer('perfil_id')->index();
             $table->rememberToken();
             $table->timestamps();

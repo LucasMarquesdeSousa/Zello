@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UsuarioRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Hamcrest\Core\HasToString;
@@ -9,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 
 use function GuzzleHttp\Promise\all;
@@ -47,34 +49,25 @@ class UserController extends Controller
         $user->save();
         return redirect()->back()->with('msg', 'Usuario editado com sucesso!');
     }
-    public function cadusuario(Request $form)
+    public function cadusuario(UsuarioRequest $form)
     {
-        $rules = [
-            'name'=> 'required|string|min:3',
-            'cpf' =>  'required|min:11|max:11',
-            'rg'=> 'required|min:7|max:7',
-            'senha'=>'required|min:8'
-        ];
-        $messages = [
-            'name.required'=>'Preencha o camo nome',
-            'cpf.required'=>'Preencha o campo CPF',
-            'cpf.min'=>'Preencha o CPF com 11 algarismos',
-            'rg.required'=> 'Preencha o campo RG',
-            'rg.min'=>'Preencha o RG com 7 caracteres',
-            'senha.required'=>'Preencha o camo senha',
-            'senha.min'=>'preencha o campo senha com no minimo 8 caracteres'
-        ];
-        return response($this->validate($form,$rules,$messages));
-
+        $cpf = User::where('cpf', '=', $form->post('cpf'))->get();
+        $rg = User::where('rg', '=', $form->post('rg'))->get();
+        if (count($cpf)) :
+            return ['cpf' => 'CPF existente'];
+        elseif (count($rg)) :
+            return ['rg' => 'RG existente'];
+        endif;
         User::create([
             'name' => $form['name'],
             'cpf' => $form['cpf'],
             'rg' => $form['rg'],
             'data_nascimento' => $form['data_nascimento'],
             'password' => Hash::make($form['password']),
-            'perfil_id' => '1'
+            'perfil_id' => '1',
+            'api_token'=> Str::random(60),
         ]);
-        return ['mensagem'=>'Cadastrado'];
+        return ['mensagem' => 'Cadastrado com sucesso'];
     }
     public function getUser(Request $request)
     {
